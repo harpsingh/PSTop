@@ -5,7 +5,7 @@ function Show-Bar {
         [String]$Footer
     )
 
-    $bar_units = [Math]::Round($Percentage / 2)
+    $bar_units = [Math]::Ceiling($Percentage / 2)
     Write-Host $Header -NoNewline
     Write-Host "[" -NoNewline
     $bar = ""
@@ -24,7 +24,7 @@ function Show-Bar {
             $bar_color = "Red"
         }
         1..$bar_units | ForEach-Object { $bar += "|" }
-        $bar_units..50 | ForEach-Object { $bar += " " }
+        $bar_units..49 | ForEach-Object { $bar += " " }
         Write-Host $bar -ForegroundColor $bar_color -NoNewline
     }
     Write-Host "]" -NoNewline
