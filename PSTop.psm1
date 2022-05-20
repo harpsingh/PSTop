@@ -1,26 +1,34 @@
-function Show-Bar ($percentage){
+function Show-Bar {
+    param (
+        [String]$Header,
+        [Float]$Percentage,
+        [String]$Footer
+    )
+
+    $bar_units = [Math]::Round($Percentage / 2)
+    Write-Host $Header -NoNewline
     Write-Host "[" -NoNewline
-    $display = ""
-    if ($percentage -eq 0){
-        1..50 | ForEach-Object { $display += " " }
-        Write-Host $display -NoNewline
+    $bar = ""
+    if ($Percentage -eq 0){
+        1..50 | ForEach-Object { $bar += " " }
+        Write-Host $bar -NoNewline
     }
     else{
-        $percentage = [Math]::Round($percentage / 2)
-        if ($percentage -lt 35){
+        if ($Percentage -lt 70){
             $bar_color = "Green"
         }
-        elseif ($percentage -lt 45){
+        elseif ($Percentage -lt 90){
             $bar_color = "Yellow"
         }
         else{
             $bar_color = "Red"
         }
-        1..$percentage | ForEach-Object { $display += "|" }
-        $percentage..50 | ForEach-Object { $display += " " }
-        Write-Host $display -ForegroundColor $bar_color -NoNewline
+        1..$bar_units | ForEach-Object { $bar += "|" }
+        $bar_units..50 | ForEach-Object { $bar += " " }
+        Write-Host $bar -ForegroundColor $bar_color -NoNewline
     }
     Write-Host "]" -NoNewline
+    Write-Host $Footer
 }
 
 function PSTop {
@@ -34,13 +42,10 @@ function PSTop {
     
         [Console]::Clear()
     
-        Write-Host "CPU: " -NoNewline
-        Show-Bar $cpu_avg
-        Write-Host " $cpu_avg%"
-        Write-Host "Mem: " -NoNewline
-        Show-Bar $(($used_memory / $total_memory) * 100)
-        Write-Host " $used_memory GB / $total_memory GB"
+        Show-Bar -Header "CPU: " -Percentage $cpu_avg -Footer " $cpu_avg%"
+        Show-Bar -Header "Mem: " -Percentage $(($used_memory / $total_memory) * 100) -Footer " $used_memory GB / $total_memory GB"
         $processes
+        Start-Sleep 1
     }
 }
 
